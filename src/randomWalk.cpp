@@ -80,12 +80,12 @@ void runRW(mat& hybrid, mat& tpMatrix, mat& annotation,mat& predictionMatrix,int
 
             mat newIt = (RfOld+Rp)/2.;
             iter2mat.insert(pair<int,mat>(iter,newIt));
-            RpOld = Rp;
+            RpOld = newIt;
         }else if(iter<=iter_F){
             mat Rf = computeR(RfOld,tpMatrix,annotation,alpha);
             mat newIt = (Rf+RpOld)/2.;
             iter2mat.insert(pair<int,mat>(iter,newIt));
-            RfOld = Rf;
+            RfOld = newIt;
         }
     }
     predictionMatrix = iter2mat.at(maxIter);
@@ -110,7 +110,7 @@ int newGOA(int ac, char* av[])
     desc.add_options()
             ("help,h", "produce help message")
             ("num_threads,T", po::value<int>(&threads) ->default_value(1), "set number of threads to parallize")
-            ("inputFolder I", po::value<string>(&inFolder)->default_value("./results"), "Set an input folder. This folder was created with the matrixPreparation function.")
+            ("inputFolder, I", po::value<string>(&inFolder)->default_value("./results"), "Set an input folder. This folder was created with the matrixPreparation function.")
             ("goFile,G",po::value<string>(&obofile),"Set the path of gene ontology file [OBO format]")
             ("hybrid,H","Computing newGOA with the hybrid matrix (ppi + semanticPpi)")
             ("outFileName,O",po::value<string>(&outfile)->default_value("predictedAnnotation.txt"), "output file name to provide the results")
@@ -196,11 +196,19 @@ int newGOA(int ac, char* av[])
     semanticPPI.load(inFolder+"/nSSPpi.bin");
     mat hybridPPI;
     hybridPPI.load(inFolder+"/hybrid.bin");
-    cout<<"start"<<endl;
     mat TP;
     TP.load(inFolder+"/TPMatrix.bin");
     //sp_mat sparseTP(TP);
 
+
+
+    auto d = static_cast<size_t>(distance(geneNode.begin(),find(geneNode.begin(),geneNode.end(),"Potra000002g00014")));
+
+    for (size_t i =0;i<hybridPPI.n_cols;i++) {
+        if(hybridPPI(d,i)>0.0){
+            cout<<geneNode.at(i)<<" "<<hybridPPI(d,i)<<" "<<proteinPPI(d,i)<<endl;
+        }
+    }
 
 
     mat annotation;
@@ -209,13 +217,16 @@ int newGOA(int ac, char* av[])
     auto duration = duration_cast<seconds>(stop - start);
     cout <<"To read the matrix files (ppis and sparse TP) took " <<duration.count()<<" seconds." << endl;
 
+
     // READ GO file
 
     start = high_resolution_clock::now();
     mat predictionMatrix;
     if(vm.count("hybrid")){
+        cout<<"hybrid"<<endl;
         runRW(hybridPPI,TP,annotation,predictionMatrix,iter_P,iter_F,alpha);
     }else{
+        cout<<"here"<<endl;
         runRW(proteinPPI,TP,annotation,predictionMatrix,iter_P,iter_F,alpha);
     }
 
@@ -237,6 +248,7 @@ int newGOA(int ac, char* av[])
         }
     }
     ofstream res;
+    cout<<(inFolder+"/"+outfile)<<endl;
     res.open(inFolder+"/"+outfile);
     res<< ss.str();
     res.close();

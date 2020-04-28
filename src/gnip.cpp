@@ -12,8 +12,8 @@ const string usage_msg =
   "[Prepare matrix]\n"
   "  matrixPreparation         \t Create matrix to compute the prediction.\n"
   "\n"
-  "[Run random Walk]\n"
-  "  randomWalk                \t Run the random walk to get gene predictions.\n"
+  "[Run newGOA]\n"
+  "  newGOA                \t Run the random walk to get gene predictions.\n"
   "Beta version \n";
 
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
         {
           ret = matrixPreparation(argc, argv);
         }
-        else if (task == "randomWalk")
+        else if (task == "newGOA")
         {
           ret =  newGOA(argc, argv);
         }

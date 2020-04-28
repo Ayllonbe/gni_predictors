@@ -416,16 +416,13 @@ Mat<double> normilizeMatrix(Mat<double>& matrix){
     size_t i;
     Mat<double> nMatrix = matrix;
     for(i = 0; i < s; i++){
-        if(d2.at(i)>0.){
             double x = 1./sqrt(d2.at(i));
             for(size_t j = i; j<s;j++)
             {
-                if(d2.at(j)>0.){
                     double y = 1./sqrt(d2.at(j));
                     nMatrix(i,j) = nMatrix(j,i) = nMatrix(i,j)*(x*y);
-                }
-            }
-        }
+
+    }
     }
 
 
@@ -530,8 +527,8 @@ void preComputeMatrix(int threads, double threshold_ss, string obofile, string g
        start = high_resolution_clock::now();
        Mat<double> nSSPpi = normilizeMatrix(ssMatrix);
        stop = high_resolution_clock::now();
-       duration = duration_cast<seconds>(stop - start);
-       cout <<"To normalize the semantic PPI matrix took "<< duration.count()<<" seconds." << endl;
+       duration2 = duration_cast<seconds>(stop - start);
+       cout <<"To normalize the semantic PPI matrix took "<< duration2.count()<<" seconds." << endl;
        // Translational probability
        start = high_resolution_clock::now();
        Mat<double> hybrid = nPpi + nSSPpi;
