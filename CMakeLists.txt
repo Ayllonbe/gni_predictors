@@ -96,3 +96,6 @@ include_directories(${NETWORKIT_TTMATH_EXT})
 target_link_libraries(GNI_predictors PUBLIC networkit)
 target_link_libraries(GNI_predictors PUBLIC ${ARMADILLO_LIBRARIES})
 target_link_libraries(GNI_predictors PUBLIC ${Boost_LIBRARIES})
+
+# Install config
+install(TARGETS GNI_predictors DESTINATION "bin")
