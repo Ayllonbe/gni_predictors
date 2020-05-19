@@ -259,14 +259,15 @@ void readAnnotation(string fileAnnotation, Annotation& annotation, map<string, N
           vector<string> results;
 
           boost::algorithm::split(results, line, boost::is_any_of("\t "));
-
+          vector<string> rem;
+           boost::algorithm::split(rem, results.at(0), boost::is_any_of("."));
           if(go2idx.find(results.at(1))!=go2idx.end()){
-          annotation.setAnnotation(results.at(0),go2idx.at(results.at(1)));
+          annotation.setAnnotation(rem.at(0),go2idx.at(results.at(1)));
 
           setGOs.insert(go2idx.at(results.at(1)));
           for(NetworKit::node n : t2anc.at(results.at(1)))
           {
-              annotation.setAnnotation(results.at(0),n);
+              annotation.setAnnotation(rem.at(0),n);
               setGOs.insert(n);
           }
           }

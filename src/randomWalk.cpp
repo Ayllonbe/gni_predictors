@@ -201,15 +201,6 @@ int newGOA(int ac, char* av[])
 
 
 
-    auto d = static_cast<size_t>(distance(geneNode.begin(),find(geneNode.begin(),geneNode.end(),"Potra000002g00014")));
-
-    for (size_t i =0;i<hybridPPI.n_cols;i++) {
-        if(hybridPPI(d,i)>0.0){
-            cout<<geneNode.at(i)<<" "<<hybridPPI(d,i)<<" "<<proteinPPI(d,i)<<endl;
-        }
-    }
-
-
     mat annotation;
     annotation.load(inFolder+"/annotationMatrix.bin");
     stop = high_resolution_clock::now();
@@ -222,10 +213,10 @@ int newGOA(int ac, char* av[])
     start = high_resolution_clock::now();
     mat predictionMatrix;
     if(vm.count("hybrid")){
-        cout<<"hybrid"<<endl;
+        cout<<"you are using the hybrid matrix (combination between original gene network and semantic similarity network)"<<endl;
         runRW(hybridPPI,TP,annotation,predictionMatrix,iter_P,iter_F,alpha);
     }else{
-        cout<<"here"<<endl;
+        cout<<"you are using the original gene network matrix"<<endl;
         runRW(proteinPPI,TP,annotation,predictionMatrix,iter_P,iter_F,alpha);
     }
 
