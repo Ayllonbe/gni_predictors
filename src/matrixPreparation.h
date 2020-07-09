@@ -7,6 +7,7 @@
 #include <networkit/graph/Graph.hpp>
 #include <bits/stdc++.h>
 #include<map>
+#include <robin_hood.h>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -82,15 +83,15 @@ class GOTerm{
 };
 
 
-std::set<NetworKit::node> getdescNodes(NetworKit::Graph& go, NetworKit::node& n);
+robin_hood::unordered_set<NetworKit::node> getdescNodes(NetworKit::Graph& go, NetworKit::node& n);
 
 
-std::vector<GOTerm> getdescendants(NetworKit::Graph& go, NetworKit::node& n, std::map<NetworKit::node,GOTerm>& idx2goterm);
+std::vector<GOTerm> getdescendants(NetworKit::Graph& go, NetworKit::node& n, robin_hood::unordered_map<NetworKit::node,GOTerm>& idx2goterm);
 
-std::set<NetworKit::node> getancNodes( NetworKit::node& n ,std::map<NetworKit::node,GOTerm>& idx2goterm);
+robin_hood::unordered_set<NetworKit::node> getancNodes( NetworKit::node& n ,robin_hood::unordered_map<NetworKit::node,GOTerm>& idx2goterm);
 
 
-std::vector<GOTerm> getancestors(NetworKit::node& n, std::map<NetworKit::node,GOTerm>& idx2goterm);
+std::vector<GOTerm> getancestors(NetworKit::node& n, robin_hood::unordered_map<NetworKit::node,GOTerm>& idx2goterm);
 
 
 class Root{
@@ -111,36 +112,30 @@ class Root{
 //      idx2goterm - a map with the node index as key and the GOTerm class as
 //      go - Graph of Gene Ontology
 //      gotermsIDidx - a map with the GOID as key and the node index as value
-void reader(std::string go_file, std::map<NetworKit::node,GOTerm>& idx2goterm,NetworKit::Graph& go, std::map<std::string,NetworKit::node>& gotermsID2idx, std::map<std::string,Root>& namespace2root, int& threads);
+void reader(std::string go_file, robin_hood::unordered_map<NetworKit::node,GOTerm>& idx2goterm,NetworKit::Graph& go, robin_hood::unordered_map<std::string,NetworKit::node>& gotermsID2idx, robin_hood::unordered_map<std::string,Root>& namespace2root, int& threads);
 
 class Annotation{
     public:
     Annotation(){
 
     }
-    Annotation(std::map<NetworKit::node, std::vector<std::string>>& go2gvec, std::map<std::string, std::vector<NetworKit::node>>& gene2govec){
+    Annotation(robin_hood::unordered_map<NetworKit::node, std::vector<std::string>>& go2gvec, robin_hood::unordered_map<std::string, robin_hood::unordered_set<NetworKit::node>>& gene2govec){
         this->go2gvec = go2gvec;
         this->gene2govec =gene2govec;
     }
-    void setAnnotation(std::string& gene, std::vector<NetworKit::node>& goTerms){
-        for(NetworKit::node goT : goTerms){
-            setAnnotation(gene, goT);
-        }
-    }
-    void setAnnotation(std::string& gene, NetworKit::node& goTerm){
-           if(this->go2gvec.find(goTerm)==this->go2gvec.end()){
-               std::vector<std::string> vec;
-               go2gvec.insert(std::pair<NetworKit::node, std::vector<std::string>>(goTerm,vec));
-           }
-           if(std::find(go2gvec.at(goTerm).begin(),go2gvec.at(goTerm).end(),gene)==go2gvec.at(goTerm).end()){
-           this->go2gvec.at(goTerm).push_back(gene);
+    void setAnnotation(NetworKit::node go, robin_hood::unordered_set<std::string>& genes){
 
-           if(this->getGOTerms(gene).size()==0){
-               std::vector<NetworKit::node> vec;
-               gene2govec.insert(std::pair<std::string, std::vector<NetworKit::node>>(gene,vec));
-           }
-           this->gene2govec.at(gene).push_back(goTerm);
-               }
+            std::vector<std::string> vec(genes.begin(),genes.end());
+            this->go2gvec.insert({go,vec});
+
+        for(std::string g : genes){
+            this->go2gvec.at(go).push_back(g);
+            if(this->getGOTerms(g).size()==0){
+                robin_hood::unordered_set<NetworKit::node> vec;
+                this->gene2govec.insert({g,vec});
+            }
+            this->gene2govec.at(g).insert(go);
+        }
     }
     std::vector<std::string> getGenes(NetworKit::node& goTerm){
         if(this->go2gvec.find(goTerm) != this->go2gvec.end()){
@@ -150,21 +145,21 @@ class Annotation{
         }
 
     }
-    std::vector<NetworKit::node> getGOTerms(std::string& gene){
+    robin_hood::unordered_set<NetworKit::node> getGOTerms(std::string& gene){
       if(this->gene2govec.find(gene)!= this->gene2govec.end()){
         return this->gene2govec.at(gene);
     }else{
-        return std::vector<NetworKit::node>();
+        return robin_hood::unordered_set<NetworKit::node>();
     }
     }
     private:
-        std::map<NetworKit::node, std::vector<std::string>> go2gvec;
-        std::map<std::string, std::vector<NetworKit::node>> gene2govec;
+        robin_hood::unordered_map<NetworKit::node, std::vector<std::string>> go2gvec;
+        robin_hood::unordered_map<std::string, robin_hood::unordered_set<NetworKit::node>> gene2govec;
 };
 
 
 
-double icSum(std::vector<NetworKit::node>& childrens, std::map<NetworKit::node, GOTerm>& idx2goTerm);
+double icSum(std::vector<NetworKit::node>& childrens, robin_hood::unordered_map<NetworKit::node, GOTerm>& idx2goTerm);
 
 int matrixPreparation(int argc, char * argv[]);
 

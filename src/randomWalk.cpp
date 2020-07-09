@@ -2,7 +2,6 @@
 #include <iostream>
 #include <networkit/graph/Graph.hpp>
 #include <bits/stdc++.h>
-#include<map>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -61,7 +60,7 @@ void runRW(mat& hybrid, mat& tpMatrix, mat& annotation,mat& predictionMatrix,int
 
     mat RpOld = annotation;
     mat  RfOld = annotation;
-    map<int,mat> iter2mat;
+     robin_hood::unordered_map<int,mat> iter2mat;
     int maxIter = max(iter_P,iter_F);
     for(int iter=1; iter<=maxIter;iter++){
         if(iter<=iter_P && iter <= iter_F){
@@ -70,7 +69,7 @@ void runRW(mat& hybrid, mat& tpMatrix, mat& annotation,mat& predictionMatrix,int
             //  mat  Rf = computeR(RfOld,tpMatrix,RfOld,alpha,"RF",iter);
             //  mat  Rp = computeR(hybrid,RpOld,RpOld,alpha,"RP",iter);
             mat newIt = (Rf+Rp)/2.;
-            iter2mat.insert(pair<int,mat>(iter,newIt));
+            iter2mat.insert({iter,newIt});
             RpOld = newIt;//Rp;
             RfOld = newIt;//Rf;
 
@@ -78,12 +77,12 @@ void runRW(mat& hybrid, mat& tpMatrix, mat& annotation,mat& predictionMatrix,int
             mat   Rp = computeR(hybrid,RpOld,annotation,alpha);
 
             mat newIt = (RfOld+Rp)/2.;
-            iter2mat.insert(pair<int,mat>(iter,newIt));
+            iter2mat.insert({iter,newIt});
             RpOld = newIt;
         }else if(iter<=iter_F){
             mat Rf = computeR(RfOld,tpMatrix,annotation,alpha);
             mat newIt = (Rf+RpOld)/2.;
-            iter2mat.insert(pair<int,mat>(iter,newIt));
+            iter2mat.insert({iter,newIt});
             RfOld = newIt;
         }
     }
@@ -171,9 +170,9 @@ int newGOA(int ac, char* av[])
 
 
     NetworKit::Graph go(0,true,true); // the first true is used to consider the graph as weigthed and the second true to consider the graph directed
-    map<NetworKit::node,GOTerm> idx2goterm;
-    map<string,NetworKit::node> gotermsID2idx;
-    map<string,Root> namespace2root;
+     robin_hood::unordered_map<NetworKit::node,GOTerm> idx2goterm;
+     robin_hood::unordered_map<string,NetworKit::node> gotermsID2idx;
+     robin_hood::unordered_map<string,Root> namespace2root;
 
     auto      start = high_resolution_clock::now();
     reader(obofile,idx2goterm, go, gotermsID2idx,namespace2root,threads);

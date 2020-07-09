@@ -53,6 +53,7 @@ int main(int argc, char* argv[])
       }
       catch (std::exception& e)
       {
+
         cout << e.what() << '\n';
         return 1;
       }

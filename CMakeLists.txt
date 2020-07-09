@@ -85,6 +85,7 @@ add_executable(GNI_predictors src/gnip.cpp src/matrixPreparation.cpp
 # Need to manually register NetworKit as a dep
 add_dependencies(GNI_predictors NetworKit)
 
+
 # Setup some more dirs the compiler needs to know about
 target_include_directories(GNI_predictors PRIVATE src)
 target_link_directories(GNI_predictors PUBLIC ${NETWORKIT_BIN_DIR})
