@@ -391,8 +391,8 @@ arma::Mat<double> computeTPMatrix(Annotation& annotation, robin_hood::unordered_
 double TO(const robin_hood::unordered_set<NetworKit::node>& setGO1, const robin_hood::unordered_set<NetworKit::node>& setGO2, const int& max){
 
     uint64_t ctr = 0; // Keep track of intersects
-    for (const auto& item : setGO2) {
-        if (setGO1.find(item) != setGO1.end()) {
+    for (const auto& item : setGOs1) {
+        if (setGO2.find(item) != setGO2.end()) {
             ctr++;
         }
     }
