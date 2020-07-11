@@ -33,6 +33,12 @@ if(CMAKE_ASAN)
   )
 endif()
 
+if(CMAKE_PROFILER)
+  set(CMAKE_CXX_FLAGS
+      "${CMAKE_CXX_FLAGS} -lprofiler"
+  )
+endif()
+
 include(ExternalProject)
 
 # ##############################################################################
@@ -62,7 +68,7 @@ ExternalProject_Add(
   NetworKit
   CMAKE_ARGS "-DNETWORKIT_STATIC=ON"
   GIT_REPOSITORY https://github.com/networkit/networkit.git
-  GIT_TAG origin/release-6.1
+  GIT_TAG origin/release-7.0
   UPDATE_DISCONNECTED ON
   INSTALL_COMMAND ""
   TMP_DIR /tmp
