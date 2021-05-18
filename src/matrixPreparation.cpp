@@ -662,7 +662,7 @@ void preComputeMatrix(int threads, double threshold_ss, std::string obofile,
     duration = duration_cast<seconds>(stop - start);
     std::cout << "To create the semantic ppi took " << duration.count()
               << " seconds." << std::endl;
-    std::cout << "TESTF" << std::endl;
+    //std::cout << "TESTF" << std::endl;
     /*
    * NORMALIZE
    */
@@ -681,22 +681,22 @@ void preComputeMatrix(int threads, double threshold_ss, std::string obofile,
     std::cout <<"To normalize the semantic PPI matrix took "<< duration.count()<<" seconds." << std::endl;
     start = high_resolution_clock::now();
     arma::Mat<double> hybrid = nPpi + nSSPpi;
-
+    std::cout <<"Exporting..."
+             << std::endl;
     /*
    * Save Matrix
    */
-    /*      hybrid.save( outFolder+"/hybrid.bin");
+    hybrid.save( outFolder+"/hybrid.bin");
     nPpi.save( outFolder+"/nPpi.bin");
     nSSPpi.save( outFolder+"/nSSPpi.bin");
     TPMatrix.save(outFolder+"/TPMatrix.bin");
     selAssoMatrix.save(outFolder+"/annotationMatrix.bin");
-*/ /*
+ /*
     * Save vectors
     */
-    /*      exportVector(outFolder+"/genes.txt",geneNodes);
-
-     exportVector(outFolder+"/GOterms.txt",selectedGOs);
-     */
+    exportVector(outFolder+"/genes.txt",geneNodes);
+    exportVector(outFolder+"/GOterms.txt",selectedGOs);
+    std::cout <<"Done."
 }
 
 int matrixPreparation(int ac, char *av[]) {
