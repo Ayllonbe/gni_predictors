@@ -697,6 +697,7 @@ void preComputeMatrix(int threads, double threshold_ss, std::string obofile,
     exportVector(outFolder+"/genes.txt",geneNodes);
     exportVector(outFolder+"/GOterms.txt",selectedGOs);
     std::cout <<"Done."
+     << std::endl;
 }
 
 int matrixPreparation(int ac, char *av[]) {
