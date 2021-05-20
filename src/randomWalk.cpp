@@ -62,7 +62,10 @@ void runRW(mat& hybrid, mat& tpMatrix, mat& annotation,mat& predictionMatrix,int
     mat  RfOld = annotation;
      robin_hood::unordered_map<int,mat> iter2mat;
     int maxIter = max(iter_P,iter_F);
+
+    std::cout << "Runing random walk with a max of " << maxIter << "iteraction" << std::endl;
     for(int iter=1; iter<=maxIter;iter++){
+        std::cout << "Iteraction " << iter << std::endl;
         if(iter<=iter_P && iter <= iter_F){
             mat  Rf = computeR(RfOld,tpMatrix,annotation,alpha);
             mat  Rp = computeR(hybrid,RpOld,annotation,alpha);
